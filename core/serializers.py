@@ -13,4 +13,8 @@ class PlatformApplicationSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['applicant', 'status', 'created_at', 'updated_at']
 
+    def to_internal_value(self, data):
+        print("后端接收原始data：", data)
+        return super().to_internal_value(data)
+
 
