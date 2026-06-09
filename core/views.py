@@ -279,7 +279,7 @@ class AuditRecordList(APIView):
         data = []
         for r in records:
             data.append({
-                "id": r.id,
+                "id": r.apply_id,
                 "username": r.apply.applicant.username,
                 "name_cn": r.apply.name_cn,
                 "depend_unit": r.apply.depend_unit,
@@ -443,3 +443,34 @@ class ApplyDetail(APIView):
             data["audit_time"] = ""
 
         return Response(data)
+
+# 获取平台信息列表
+class PlatformPublicList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # 1. 基础查询：只查询【审批通过】的平台
+        queryset = PlatformApplication.objects.filter(status="approved")
+
+        # 2. 获取前端传来的筛选参数 level
+        level = request.GET.get("level")
+        # 校验 level 为合法值 1/2/3
+        if level and level in ["1", "2", "3"]:
+            queryset = queryset.filter(level=level)
+
+        # 3. 组装前端需要的精简数据（只返回卡片所需字段）
+        result = []
+        for item in queryset:
+            result.append({
+                "id": item.id,
+                "name_cn": item.name_cn or "",
+                "category": item.category or "",
+                "level": item.level or "",
+                "position": item.position or ""  # 平台定位，前端描述文案
+            })
+
+        # 统一返回格式（和你现有接口风格对齐）
+        return Response({
+            "code": 200,
+            "data": result
+        })

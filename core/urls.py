@@ -11,7 +11,7 @@ from .views import (
     PendingApplyList,
     AuditPass,
     AuditReject,
-    AuditRecordList, RichImageUpload, ApplyDetail
+    AuditRecordList, RichImageUpload, ApplyDetail, PlatformPublicList
 )
 
 router = DefaultRouter()
@@ -33,4 +33,5 @@ urlpatterns = [
     path('audit/record/', csrf_exempt(AuditRecordList.as_view()), name='audit_record'),
     path('upload/image/', csrf_exempt(RichImageUpload.as_view()), name='rich_img_upload'),
     path('apply/detail/', csrf_exempt(ApplyDetail.as_view()), name='apply_detail'),
+    path('researchlist/', csrf_exempt(PlatformPublicList.as_view()), name='research_list'),
 ]
